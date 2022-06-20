@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Field</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="{%static 'css/field.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quiz_background.css' %}">
+    <link rel="stylesheet" href="{% static 'css/logo.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <noscript> <div style="position: fixed; top: 0px; left: 0px; z-index: 30000000; 
+                height: 100%; width: 100%; background-color: #FFFFFF">
+        <p style="margin-left: 10px">Don't be oversmart. Please enable javascript to continue exam.</p>
+    </div></noscript>
+    <link rel="icon" href="{% static 'img/yudiz.png' %}" type="image/x-icon">
+</head>
+
+<body>
+    
+    <center><h1 style="color:lightyellow; margin-top:2%;">Please select one technology from below</h1></center>
+    <img class="logo" style="margin-top: -5%;" src="{% static 'img/yudiz-new.jpg' %}">
+    <div class="container-fluid bg-trasparent my-4 p-3" style="position: relative;">
+        <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+            {% for field in field_name %}
+            <div class="col">
+                <div class="card h-100 shadow-sm"> <img
+                        src="{% static field.profile_pic.url %}"
+                        class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <!-- <div class="clearfix mb-3"> <span class="float-start badge rounded-pill bg-primary">ASUS Rog</span> <span class="float-end price-hp">12354.00€</span> </div> -->
+                        <center>
+                            <h5 class="card-title">{{ field.field_name }}</h5>
+                        </center>
+                        <div class="text-center my-4"> <a href="{% url 'instruction' field.id  %}" class="btn btn-warning">Take Test</a> </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
