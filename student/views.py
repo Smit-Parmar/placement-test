@@ -17,12 +17,9 @@ from django.http import HttpResponse,JsonResponse
 
 @login_required(login_url='login')
 def field_choice(request):
-    print("Inside choise")
     user_obj = User.objects.get(id=request.user.id)
-    print(user_obj)
     try:
         student = models.Student.objects.get(user=user_obj)
-        print("status.......",student.status)
     except:
         return HttpResponse("Something went wrong you cannot login. Please contact contact@yudiz.com")
     if student.status=="started":
@@ -56,7 +53,6 @@ def set_timer(request,pk):
     x = datetime.datetime.now()
     now = x.strftime("%b %d, %Y %H:%M:%S")
     request.session['start_time']=str(now)
-    print(pk)
     return redirect(f"/student/start-exam/{pk}")
 
 @login_required(login_url='login')
@@ -81,7 +77,6 @@ def start_exam_view(request,pk):
     return response
 
 def suspicious(request):
-    print("called")
     request.session["count"]+=1
     response={"count":request.session["count"]}
     return JsonResponse (response)
@@ -102,17 +97,13 @@ def calculate_marks_view(request):
         for i in range(len(questions)):
             
             selected_ans = request.COOKIES.get(str(i+1))
-            print("selected",selected_ans)
             actual_answer = questions[i].answer
             if selected_ans == actual_answer:
                 obtained_marks = obtained_marks + questions[i].marks
         user_obj = User.objects.get(id=request.user.id)
         student = models.Student.objects.get(user=user_obj)
-        # student = models.Student()
-        # student.user=user_obj
-        # student.mobile="7878585787"
+
         if request.session["count"] < 3:
-            print(obtained_marks)
             student.marks=obtained_marks
             # student.email=user_obj.email
             student.exam=field
@@ -120,7 +111,6 @@ def calculate_marks_view(request):
             student.status="submitted"
             student.save()
             percetange=(float(obtained_marks)/float(total_marks))*100
-            print(percetange)
             try:
                 if percetange >=70:
                     send_mail(
@@ -139,12 +129,11 @@ def calculate_marks_view(request):
                                         fail_silently=False,
                                     )
             except Exception as e:
-                print(e);
+                pass
             request.session["count"]=0
             request.session.modified = True
             return redirect('/logout')
         else:
-            print("inside suspicious",request.session["count"])
             student.marks=0
             # student.email=user_obj.email
             student.exam=field
@@ -165,10 +154,3 @@ def view_result_view(request):
     return render(request,'student/view_result.html',{'fields':fields})
     
 
-# @login_required(login_url='login')
-# # @user_passes_test(is_student)
-# def check_marks_view(request,pk):
-#     field=QMODEL.Field.objects.get(id=pk)
-#     student = models.Student.objects.get(user_id=request.user.id)
-#     results= QMODEL.Result.objects.all().filter(exam=field).filter(student=student)
-#     return render(request,'student/check_marks.html',{'results':results})
